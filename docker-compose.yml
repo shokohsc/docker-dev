@@ -45,3 +45,19 @@ services:
         depends_on:
             - nginx
         mem_limit: 128m
+
+    elk:
+        container_name: elk
+        image: willdurand/elk
+        ports:
+            - "81:80/tcp"
+        volumes:
+            - ./elk/logstash:/etc/logstash
+            - ./elk/logstash/patterns:/opt/logstash/patterns
+        volumes_from:
+            - php-fpm
+            - nginx
+        depends_on:
+            - php-fpm
+            - nginx
+        mem_limit: 800m

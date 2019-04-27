@@ -2,8 +2,8 @@
 
 if [[ -z $1 ]]
 then
-    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish <==== ####' && \
-    docker-compose up -d --remove-orphans php-fpm nginx varnish
+    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish elk <==== ####' && \
+    docker-compose up -d --remove-orphans php-fpm nginx varnish elk
 
 elif [[ $1 = 'pull' ]]
 then
