@@ -1,0 +1,104 @@
+#!/usr/bin/with-contenv bash
+
+PHP_FPM_USER="www-data"
+PHP_FPM_GROUP="www-data"
+PHP_FPM_LISTEN_MODE="0660"
+PHP_MEMORY_LIMIT="2G"
+PHP_MAX_UPLOAD="2G"
+PHP_MAX_FILE_UPLOAD="200"
+PHP_MAX_POST="2G"
+PHP_DISPLAY_ERRORS="On"
+PHP_DISPLAY_STARTUP_ERRORS="On"
+PHP_ERROR_REPORTING="E_COMPILE_ERROR\|E_RECOVERABLE_ERROR\|E_ERROR\|E_CORE_ERROR"
+PHP_CGI_FIX_PATHINFO=0
+
+# make our folders
+mkdir -p \
+	/etc/php7 \
+    /var/{www,log/php} \
+	/run
+
+
+#php-fpm conf setting
+[[ -f /etc/php7/php-fpm.conf ]] && \
+    echo "setting default /etc/php7/php-fpm.conf settings" && \
+    sed -i "s|;listen.owner\s*=\s*nobody|listen.owner = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.conf && \
+    sed -i "s|;listen.group\s*=\s*nobody|listen.group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.conf && \
+    sed -i "s|;listen.mode\s*=\s*0660|listen.mode = ${PHP_FPM_LISTEN_MODE}|g" /etc/php7/php-fpm.conf && \
+    sed -i "s|user\s*=\s*nobody|user = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.conf && \
+    sed -i "s|group\s*=\s*nobody|group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.conf && \
+    sed -i "s|;log_level\s*=\s*notice|log_level = notice|g" /etc/php7/php-fpm.conf
+
+
+#fix php-fpm user
+[[ -f /etc/php7/php-fpm.d/www.conf ]] && \
+    echo "setting default /etc/php7/php-fpm.d/www.conf settings" && \
+    sed -i "s#user = nobody.*#user = www-data#g" /etc/php7/php-fpm.d/www.conf && \
+    sed -i "s#group = nobody.*#group = www-data#g" /etc/php7/php-fpm.d/www.conf && \
+    sed -i "s#127.0.0.1:9000#0.0.0.0:9000#g" /etc/php7/php-fpm.d/www.conf && \
+    sed -i "s#;clear_env = no#clear_env = no#g" /etc/php7/php-fpm.d/www.conf
+
+# copy user www.conf to image
+[[ ! -f /etc/php7/php-fpm.d/www.conf ]] && \
+    echo "overwrite /etc/php7/php-fpm.d/www.conf" && \
+    cp /defaults/www.conf /etc/php7/php-fpm.d/www.conf
+
+
+#php ini setting
+[[ -f /etc/php7/php.ini ]] && \
+    echo "setting default /etc/php7/php.ini settings" && \
+    sed -i "s|display_errors\s*=\s*Off|display_errors = ${PHP_DISPLAY_ERRORS}|i" /etc/php7/php.ini && \
+    sed -i "s|display_startup_errors\s*=\s*Off|display_startup_errors = ${PHP_DISPLAY_STARTUP_ERRORS}|i" /etc/php7/php.ini && \
+    sed -i "s|error_reporting\s*=\s*E_ALL & ~E_DEPRECATED & ~E_STRICT|error_reporting = ${PHP_ERROR_REPORTING}|i" /etc/php7/php.ini && \
+    sed -i "s|;*memory_limit =.*|memory_limit = ${PHP_MEMORY_LIMIT}|i" /etc/php7/php.ini && \
+    sed -i "s|;*upload_max_filesize =.*|upload_max_filesize = ${PHP_MAX_UPLOAD}|i" /etc/php7/php.ini && \
+    sed -i "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD}|i" /etc/php7/php.ini && \
+    sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php7/php.ini && \
+    sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= ${PHP_CGI_FIX_PATHINFO}|i" /etc/php7/php.ini
+
+if [[ 'On' == $XDEBUG ]]
+then
+    echo 'adding xdebug' && \
+    # echo 'xdebug.force_display_errors=1' >> /etc/php7/php.ini && \
+    # echo 'xdebug.force_error_reporting=1' >> /etc/php7/php.ini && \
+    # echo 'xdebug.scream=1' >> /etc/php7/php.ini && \
+    # echo 'xdebug.cli_color=1' >> /etc/php7/php.ini && \
+    grep -qxF 'zend_extension="/usr/lib/php7/modules/xdebug.so"' /etc/php7/php.ini || echo 'zend_extension="/usr/lib/php7/modules/xdebug.so"' >> /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_children=64' /etc/php7/php.ini || echo 'xdebug.var_display_max_children=64' >> /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_data=128' /etc/php7/php.ini || echo 'xdebug.var_display_max_data=128' >> /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_depth=1' /etc/php7/php.ini || echo 'xdebug.var_display_max_depth=1' >> /etc/php7/php.ini
+else
+    echo 'removing xdebug' && \
+    grep -qxF 'zend_extension="/usr/lib/php7/modules/xdebug.so"' /etc/php7/php.ini || sed '/zend_extension="/usr/lib/php7/modules/xdebug.so"/d' /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_children=64' /etc/php7/php.ini || sed '/xdebug.var_display_max_children=64/d' /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_data=128' /etc/php7/php.ini || sed '/xdebug.var_display_max_data=128/d' /etc/php7/php.ini && \
+    grep -qxF 'xdebug.var_display_max_depth=1' /etc/php7/php.ini || sed '/xdebug.var_display_max_depth=1/d' /etc/php7/php.ini
+fi
+
+if [[ 'On' == $XDEBUG_REMOTE ]]
+then
+    echo 'adding xdebug remote debugging' && \
+    grep -qxF 'xdebug.remote_enable=1' /etc/php7/php.ini || echo 'xdebug.remote_enable=1' >> /etc/php7/php.ini && \
+    grep -qxF 'xdebug.remote_port=9002' /etc/php7/php.ini || echo 'xdebug.remote_port=9002' >> /etc/php7/php.ini && \
+    grep -q 'xdebug.remote_host=' /etc/php7/php.ini || echo 'xdebug.remote_host=${XDEBUG_REMOTE_HOST}' >> /etc/php7/php.ini
+else
+    echo 'removing xdebug remove debugging' && \
+    grep -qxF 'xdebug.remote_enable=0' /etc/php7/php.ini || sed '/xdebug.remote_enable=0/d' /etc/php7/php.ini && \
+    grep -qxF 'xdebug.remote_port=9002' /etc/php7/php.ini || sed '/xdebug.remote_port=9002/d' /etc/php7/php.ini && \
+    grep -q "xdebug.remote_host=" /etc/php7/php.ini || sed "/xdebug.remote_host=/d" /etc/php7/php.ini
+fi
+
+
+# copy default php.ini
+[[ ! -f /etc/php7/php.ini ]] && \
+    echo "overwrite /etc/php7/php.ini" && \
+    cp /defaults/php.ini /etc/php7/php.ini
+
+# permissions
+chown -R www-data:www-data \
+    /var/www \
+	/etc/php7
+chmod -R g+w \
+	/var/www \
+    /etc/php7
+chmod -R 644 /etc/logrotate.d

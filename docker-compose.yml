@@ -1,0 +1,47 @@
+version: '2.2'
+
+services:
+    php-fpm:
+        container_name: php-fpm
+        build:
+            context: dockerfiles/php-fpm
+        environment:
+            PGID: ${PGID}
+            PUID: ${PUID}
+            TZ: ${TIMEZONE}
+            XDEBUG: ${XDEBUG}
+            XDEBUG_REMOTE: ${XDEBUG_REMOTE}
+            XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+        volumes:
+            - /var/www/symfony
+        volumes:
+            - ${SYMFONY_APP_PATH}:/var/www/symfony:${CACHE_MODE}
+        mem_limit: 4096m
+
+    nginx:
+        container_name: nginx
+        image: shokohsc/alpine-nginx
+        environment:
+            PGID: ${PGID}
+            PUID: ${PUID}
+            TZ: ${TIMEZONE}
+        ports:
+            - "80:80/tcp"
+        volumes_from:
+            - php-fpm
+        depends_on:
+            - php-fpm
+        mem_limit: 50m
+
+    varnish:
+        container_name: varnish
+        image: shokohsc/alpine-varnish
+        environment:
+            PGID: ${PGID}
+            PUID: ${PUID}
+            TZ: ${TIMEZONE}
+        ports:
+            - "8080:80/tcp"
+        depends_on:
+            - nginx
+        mem_limit: 128m
