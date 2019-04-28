@@ -11,7 +11,7 @@ RUN \
 	logrotate \
 	openssl \
 	php7 \
-    php7-bz2 \
+  php7-bz2 \
 	php7-ctype \
 	php7-curl \
 	php7-dom \
@@ -39,13 +39,28 @@ RUN \
 	php7-openssl \
 	php7-session \
 	php7-simplexml \
-	php7-xml \
 	php7-xmlwriter \
-    php7-opcache \
-    php7-apcu \
-	php7-zlib && \
+  php7-opcache \
+  php7-apcu \
+	php7-zlib \
+  php7-pear \
+  php7-dev \
+  gcc \
+  g++ \
+  musl-dev \
+  make \
+  unrar && \
  echo "**** fix logrotate ****" && \
  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf
+
+# Rar Extension
+RUN pecl install rar
+
+RUN \
+  touch /etc/php7/conf.d/rar.ini && \
+  echo 'extension=rar.so' >> /etc/php7/conf.d/rar.ini && \
+  chown www-data:dialout /etc/php7/conf.d/rar.ini && \
+  chmod 664 /etc/php7/conf.d/rar.ini
 
 # dev
 RUN \
