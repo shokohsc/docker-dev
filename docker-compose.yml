@@ -46,18 +46,44 @@ services:
             - nginx
         mem_limit: 128m
 
-    elk:
-        container_name: elk
-        image: willdurand/elk
-        ports:
-            - "81:80/tcp"
+    elasticsearch:
+        container_name: elasticsearch
+        build:
+            context: elasticsearch/
+            args:
+                ELK_VERSION: $ELK_VERSION
         volumes:
-            - ./elk/logstash:/etc/logstash
-            - ./elk/logstash/patterns:/opt/logstash/patterns
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+        environment:
+            ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+    logstash:
+        container_name: logstash
+        build:
+            context: logstash/
+            args:
+                ELK_VERSION: $ELK_VERSION
+        volumes:
+            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+            - ./logstash/patterns:/opt/logstash/patterns
+            - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
         volumes_from:
             - php-fpm
             - nginx
+        environment:
+            LS_JAVA_OPTS: "-Xmx256m -Xms256m"
         depends_on:
-            - php-fpm
-            - nginx
-        mem_limit: 800m
+            - elasticsearch
+
+    kibana:
+        container_name: kibana
+        build:
+            context: kibana/
+            args:
+                ELK_VERSION: $ELK_VERSION
+        volumes:
+            - ./kibana/config/:/usr/share/kibana/config:ro
+        ports:
+            - "81:5601"
+        depends_on:
+            - elasticsearch
