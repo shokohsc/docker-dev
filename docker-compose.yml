@@ -18,6 +18,18 @@ services:
             - ${SYMFONY_APP_PATH}:/var/www/symfony:${CACHE_MODE}
         mem_limit: 4096m
 
+    sqlite:
+        container_name: sqlite
+        image: sqrt3/sqlite-web
+        command: /db/data.db
+        ports:
+            - "82:8080"
+        volumes:
+            - ${SYMFONY_APP_PATH}/var/:/db
+        depends_on:
+            - php-fpm
+        mem_limit: 1024m
+
     nginx:
         container_name: nginx
         image: shokohsc/alpine-nginx
@@ -56,6 +68,7 @@ services:
             - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
         environment:
             ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+        mem_limit: 512m
 
     logstash:
         container_name: logstash
@@ -74,6 +87,7 @@ services:
             LS_JAVA_OPTS: "-Xmx256m -Xms256m"
         depends_on:
             - elasticsearch
+        mem_limit: 512m
 
     kibana:
         container_name: kibana
@@ -87,3 +101,4 @@ services:
             - "81:5601"
         depends_on:
             - elasticsearch
+        mem_limit: 128m

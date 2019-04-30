@@ -2,8 +2,8 @@
 
 if [[ -z $1 ]]
 then
-    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish elasticsearch logstash kibana <==== ####' && \
-    docker-compose up -d --remove-orphans php-fpm nginx varnish elasticsearch logstash kibana
+    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish elasticsearch logstash kibana sqlite <==== ####' && \
+    docker-compose up -d --remove-orphans php-fpm nginx varnish elasticsearch logstash kibana sqlite
 
 elif [[ $1 = 'pull' ]]
 then
