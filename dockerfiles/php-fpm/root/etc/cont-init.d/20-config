@@ -95,10 +95,10 @@ fi
     cp /defaults/php.ini /etc/php7/php.ini
 
 # permissions
-chown -R www-data:www-data \
+chown www-data:www-data \
     /var/www \
 	/etc/php7
-chmod -R g+w \
+chmod g+w \
 	/var/www \
     /etc/php7
 chmod -R 644 /etc/logrotate.d
