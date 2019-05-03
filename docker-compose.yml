@@ -18,18 +18,6 @@ services:
             - ${SYMFONY_APP_PATH}:/var/www/symfony:${CACHE_MODE}
         mem_limit: 4096m
 
-    sqlite:
-        container_name: sqlite
-        image: sqrt3/sqlite-web
-        command: /db/data.db
-        ports:
-            - "82:8080"
-        volumes:
-            - ${SYMFONY_APP_PATH}/var/:/db
-        depends_on:
-            - php-fpm
-        mem_limit: 1024m
-
     nginx:
         container_name: nginx
         image: shokohsc/alpine-nginx
@@ -53,7 +41,7 @@ services:
             PUID: ${PUID}
             TZ: ${TIMEZONE}
         ports:
-            - "8080:80"
+            - "81:80"
         depends_on:
             - nginx
         mem_limit: 128m
@@ -98,7 +86,19 @@ services:
         volumes:
             - ./kibana/config/:/usr/share/kibana/config:ro
         ports:
-            - "81:5601"
+            - "82:5601"
         depends_on:
             - elasticsearch
         mem_limit: 128m
+
+    sqlite:
+        container_name: sqlite
+        image: sqrt3/sqlite-web
+        command: /db/data.db
+        ports:
+            - "83:8080"
+        volumes:
+            - ${SYMFONY_APP_PATH}/var/:/db
+        depends_on:
+            - php-fpm
+        mem_limit: 1024m

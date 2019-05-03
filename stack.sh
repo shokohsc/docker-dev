@@ -26,11 +26,23 @@ then
     echo '#### ====>  stopping containers <==== ####' && \
     docker-compose stop
 
+elif [[ $1 = 'sf' ]]
+then
+    echo '#### ====>  symfony project rights <==== ####' && \
+    docker exec php-fpm chown -R www-data:www-data /var/www/symfony
+
+elif [[ $1 = 'php' ]]
+then
+    echo '#### ====>  enter php-fpm container as root using bash <==== ####' && \
+    docker exec -ti php-fpm bash
+
 else
     echo "How to use ?
     ./stack.sh
     ./stack.sh pull
     ./stack.sh build
     ./stack.sh stop
-    ./stack.sh rm"
+    ./stack.sh rm
+    ./stack.sh sf
+    ./stack.sh php"
 fi

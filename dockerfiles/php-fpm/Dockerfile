@@ -11,7 +11,7 @@ RUN \
 	logrotate \
 	openssl \
 	php7 \
-  php7-bz2 \
+    php7-bz2 \
 	php7-ctype \
 	php7-curl \
 	php7-dom \
@@ -40,16 +40,18 @@ RUN \
 	php7-session \
 	php7-simplexml \
 	php7-xmlwriter \
-  php7-opcache \
-  php7-apcu \
+    php7-opcache \
+    php7-apcu \
 	php7-zlib \
-  php7-pear \
-  php7-dev \
-  gcc \
-  g++ \
-  musl-dev \
-  make \
-  unrar && \
+    php7-pear \
+    php7-dev \
+    gcc \
+    g++ \
+    musl-dev \
+    make \
+    unrar \
+    nodejs \
+    yarn && \
  echo "**** fix logrotate ****" && \
  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf
 
