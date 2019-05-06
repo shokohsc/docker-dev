@@ -12,6 +12,8 @@ services:
             XDEBUG: ${XDEBUG}
             XDEBUG_REMOTE: ${XDEBUG_REMOTE}
             XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+        ports:
+            - "8080:8080"
         volumes:
             - /var/www/symfony
         volumes:
@@ -29,6 +31,8 @@ services:
             - "80:80"
         volumes:
             - /var/log/nginx
+        volumes:
+            - ./dockerfiles/nginx/root/etc/cont-init.d/20-config:/etc/cont-init.d/20-config:${CACHE_MODE}
         volumes_from:
             - php-fpm
         depends_on:
