@@ -36,6 +36,11 @@ then
     echo '#### ====>  enter php-fpm container as root using bash <==== ####' && \
     docker exec -ti php-fpm bash
 
+elif [[ $1 = 'nginx' ]]
+then
+    echo '#### ====>  enter nginx container as root using bash <==== ####' && \
+    docker exec -ti nginx bash
+
 else
     echo "How to use ?
     ./stack.sh
@@ -44,5 +49,6 @@ else
     ./stack.sh stop
     ./stack.sh rm
     ./stack.sh sf
+    ./stack.sh nginx
     ./stack.sh php"
 fi
