@@ -33,6 +33,7 @@ services:
             - /var/log/nginx
         volumes:
             - ${SYMFONY_APP_PATH}/public/index.php:/var/www/symfony/public/index.php:${CACHE_MODE}
+            - ${SYMFONY_APP_PATH}/public/favicon.png:/var/www/symfony/public/favicon.png:${CACHE_MODE}
         depends_on:
             - php-fpm
         mem_limit: 50m
