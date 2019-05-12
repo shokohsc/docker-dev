@@ -12,6 +12,7 @@ services:
             XDEBUG: ${XDEBUG}
             XDEBUG_REMOTE: ${XDEBUG_REMOTE}
             XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+            ENCORE_DEV_SERVER: ${ENCORE_DEV_SERVER}
         ports:
             - "8080:8080"
         volumes:
@@ -34,6 +35,7 @@ services:
         volumes:
             - ${SYMFONY_APP_PATH}/public/index.php:/var/www/symfony/public/index.php:${CACHE_MODE}
             - ${SYMFONY_APP_PATH}/public/favicon.png:/var/www/symfony/public/favicon.png:${CACHE_MODE}
+            - ${SYMFONY_APP_PATH}/public/build:/var/www/symfony/public/build:${CACHE_MODE}
         depends_on:
             - php-fpm
         mem_limit: 8m
