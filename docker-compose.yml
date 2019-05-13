@@ -77,7 +77,7 @@ services:
             LS_JAVA_OPTS: "-Xmx256m -Xms256m"
         depends_on:
             - elasticsearch
-        mem_limit: 512m
+        mem_limit: 1024m
 
     kibana:
         container_name: kibana
