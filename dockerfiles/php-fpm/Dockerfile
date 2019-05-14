@@ -29,8 +29,6 @@ RUN \
 	php7-sockets \
 	php7-sqlite3 \
 	php7-tokenizer \
-	php7-xml \
-	php7-xmlreader \
 	php7-zip \
 	php7-fileinfo \
 	php7-fpm \
@@ -38,8 +36,6 @@ RUN \
 	php7-mbstring \
 	php7-openssl \
 	php7-session \
-	php7-simplexml \
-	php7-xmlwriter \
     php7-opcache \
     php7-apcu \
 	php7-zlib \
@@ -56,19 +52,16 @@ RUN \
  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf
 
 # Rar Extension
-RUN pecl install rar
-
-RUN \
-  touch /etc/php7/conf.d/rar.ini && \
-  echo 'extension=rar.so' >> /etc/php7/conf.d/rar.ini && \
-  chown www-data:dialout /etc/php7/conf.d/rar.ini && \
-  chmod 664 /etc/php7/conf.d/rar.ini
+RUN pecl install rar && \
+    touch /etc/php7/conf.d/rar.ini && \
+    echo 'extension=rar.so' >> /etc/php7/conf.d/rar.ini && \
+    chown www-data:www-data /etc/php7/conf.d/rar.ini && \
+    chmod 664 /etc/php7/conf.d/rar.ini
 
 # dev
 RUN \
  echo "**** install dev build packages ****" && \
  apk add --no-cache \
-	make \
     php7-xdebug \
     php-pcntl \
     php-posix && \
