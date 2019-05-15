@@ -95,10 +95,10 @@ fi
     cp /defaults/php.ini /etc/php7/php.ini
 
 # permissions
-find /var/www -type d -path /var/www/symfony/public -prune -o -print0 | xargs -0 chown www-data:www-data -R
+find /var/www -type d -path /var/www/symfony/public -prune -o -print0 | xargs -0 chown www-data:www-data
 chown -R www-data:www-data /etc/php7
 
-find /var/www -type d -not -path /var/www/symfony/public  -prune -o -print0 | xargs -0 chmod g+w
+find /var/www -type d -path /var/www/symfony/public  -prune -o -print0 | xargs -0 chmod g+w
 chmod -R g+w /etc/php7
 
 chmod -R 644 /etc/logrotate.d
