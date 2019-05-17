@@ -38,6 +38,7 @@ RUN \
 	php7-session \
     php7-opcache \
     php7-apcu \
+    php7-intl \
 	php7-zlib \
     php7-pear \
     php7-dev \
