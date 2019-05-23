@@ -102,3 +102,6 @@ find /var/www -type d -path /var/www/symfony/public  -prune -o -print0 | xargs -
 chmod -R g+w /etc/php7
 
 chmod -R 644 /etc/logrotate.d
+
+# docker
+usermod -aG root www-data

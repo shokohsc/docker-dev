@@ -17,6 +17,7 @@ services:
             - "8080:8080"
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony:${CACHE_MODE}
+            - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
         mem_limit: 2056m
 
     nginx:
