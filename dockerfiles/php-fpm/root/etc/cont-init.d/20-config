@@ -108,3 +108,6 @@ grep -q 'ping' /etc/group && delgroup ping
 grep -qxF 'docker' /etc/group || addgroup -g 999 docker
 groups www-data |grep docker || addgroup www-data docker
 groups www-data |grep root || addgroup www-data root
+
+# ping capability
+chmod u+s /bin/ping
