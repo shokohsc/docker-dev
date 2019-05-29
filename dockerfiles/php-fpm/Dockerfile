@@ -40,6 +40,7 @@ RUN \
     php7-apcu \
     php7-intl \
 	php7-zlib \
+    php7-simplexml \
     php7-pear \
     php7-dev \
     gcc \
