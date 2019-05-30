@@ -1,0 +1,17 @@
+version: '2.2'
+
+services:
+    gunicorn:
+        image: shokohsc/alpine-gunicorn
+        container_name: gunicorn
+        environment:
+            PGID: ${PGID}
+            PUID: ${PUID}
+            TZ: ${TIMEZONE}
+        volumes:
+            - ./dockerfiles/gunicorn/root/etc/cont-init.d/10-adduser:/etc/cont-init.d/10-adduser:${CACHE_MODE}
+            - ./dockerfiles/gunicorn/root/etc/cont-init.d/21-config:/etc/cont-init.d/21-config:${CACHE_MODE}
+            - ${APP_PATH}:/var/www/app:${CACHE_MODE}
+        ports:
+            - "80:80"
+        mem_limit: 2048m

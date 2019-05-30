@@ -18,7 +18,7 @@ services:
         volumes:
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
             - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
-        mem_limit: 2056m
+        mem_limit: 4096m
 
     nginx:
         container_name: nginx
