@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
-PHP_FPM_USER="www-data"
-PHP_FPM_GROUP="www-data"
+PHP_FPM_USER="app"
+PHP_FPM_GROUP="app"
 PHP_FPM_LISTEN_MODE="0660"
 PHP_MEMORY_LIMIT="2G"
 PHP_MAX_UPLOAD="2G"
@@ -33,8 +33,8 @@ mkdir -p \
 #fix php-fpm user
 [[ -f /etc/php7/php-fpm.d/www.conf ]] && \
     echo "setting default /etc/php7/php-fpm.d/www.conf settings" && \
-    sed -i "s#user = nobody.*#user = www-data#g" /etc/php7/php-fpm.d/www.conf && \
-    sed -i "s#group = nobody.*#group = www-data#g" /etc/php7/php-fpm.d/www.conf && \
+    sed -i "s#user = nobody.*#user = app#g" /etc/php7/php-fpm.d/www.conf && \
+    sed -i "s#group = nobody.*#group = app#g" /etc/php7/php-fpm.d/www.conf && \
     sed -i "s#127.0.0.1:9000#0.0.0.0:9000#g" /etc/php7/php-fpm.d/www.conf && \
     sed -i "s#;clear_env = no#clear_env = no#g" /etc/php7/php-fpm.d/www.conf
 
@@ -95,8 +95,8 @@ fi
     cp /defaults/php.ini /etc/php7/php.ini
 
 # permissions
-find /var/www -type d -path /var/www/symfony/public -prune -o -print0 | xargs -0 chown www-data:www-data
-chown -R www-data:www-data /etc/php7
+find /var/www -type d -path /var/www/symfony/public -prune -o -print0 | xargs -0 chown app:app
+chown -R app:app /etc/php7
 
 find /var/www -type d -path /var/www/symfony/public  -prune -o -print0 | xargs -0 chmod g+w
 chmod -R g+w /etc/php7
@@ -106,8 +106,8 @@ chmod -R 644 /etc/logrotate.d
 # docker
 grep -q 'ping' /etc/group && delgroup ping
 grep -qxF 'docker' /etc/group || addgroup -g 999 docker
-groups www-data |grep docker || addgroup www-data docker
-groups www-data |grep root || addgroup www-data root
+groups app |grep docker || addgroup app docker
+groups app |grep root || addgroup app root
 
 # ping capability
 chmod u+s /bin/ping

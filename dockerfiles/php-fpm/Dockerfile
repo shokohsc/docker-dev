@@ -1,10 +1,11 @@
-FROM shokohsc/alpine-s6
+FROM shokohsc/alpine-s6:3.9
 
 ENV WORKDIR "/var/www/symfony"
 
 # install packages
 RUN \
  echo "**** install build packages ****" && \
+ apk update && \
  apk add --no-cache \
 	git \
 	libressl2.7-libssl \
@@ -57,7 +58,6 @@ RUN \
 RUN pecl install rar && \
     touch /etc/php7/conf.d/rar.ini && \
     echo 'extension=rar.so' >> /etc/php7/conf.d/rar.ini && \
-    chown www-data:www-data /etc/php7/conf.d/rar.ini && \
     chmod 664 /etc/php7/conf.d/rar.ini
 
 # dev

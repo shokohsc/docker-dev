@@ -1,17 +1,23 @@
 version: '2.2'
 
 services:
-    gunicorn:
-        image: shokohsc/alpine-gunicorn
-        container_name: gunicorn
+    python:
+        build:
+            context: dockerfiles/python
+        container_name: python
         environment:
             PGID: ${PGID}
             PUID: ${PUID}
             TZ: ${TIMEZONE}
+            ENCORE_DEV_SERVER: ${ENCORE_DEV_SERVER}
+            ENTRYPOINTS_FILE: ${ENTRYPOINTS_FILE}
+            FLASK_ENV: ${FLASK_ENV}
+            FLASK_APP: ${FLASK_APP}
+            SECRET_KEY: ${SECRET_KEY}
+            TWITCH_CLIENT_ID: ${TWITCH_CLIENT_ID}
         volumes:
-            - ./dockerfiles/gunicorn/root/etc/cont-init.d/10-adduser:/etc/cont-init.d/10-adduser:${CACHE_MODE}
-            - ./dockerfiles/gunicorn/root/etc/cont-init.d/21-config:/etc/cont-init.d/21-config:${CACHE_MODE}
             - ${APP_PATH}:/var/www/app:${CACHE_MODE}
         ports:
-            - "80:80"
+            - "80:5000"
+            - "8080:8080"
         mem_limit: 2048m

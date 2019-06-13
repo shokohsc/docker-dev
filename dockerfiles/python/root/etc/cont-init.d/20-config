@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+
+# permissions
+chown -R app:app /var/www/app
+
+chmod -R g+w /var/www/app
+
+chmod -R 644 /etc/logrotate.d
+
+pip3 install -r requirements.txt

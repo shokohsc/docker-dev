@@ -7,8 +7,8 @@ then
 
 elif [[ $1 = 'flask' ]]
 then
-    echo '#### ====>  starting basic stack containers: gunicorn <==== ####' && \
-    docker-compose -f docker-compose.python.yml up -d --remove-orphans gunicorn
+    echo '#### ====>  starting basic stack containers: python <==== ####' && \
+    docker-compose -f docker-compose.python.yml up -d --remove-orphans python
 
 elif [[ $1 = 'pull' ]]
 then
