@@ -1,8 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-if [[ 'On' == $ENCORE_DEV_SERVER ]]
-then
-    exec /usr/bin/yarn --cwd /var/www/symfony encore dev-server --host 0.0.0.0 --public http://localhost:8080 --disable-host-check --hot
-else
-    exec /usr/bin/yarn --cwd /var/www/symfony encore dev --watch
-fi

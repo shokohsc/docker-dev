@@ -13,9 +13,12 @@ services:
             XDEBUG_REMOTE: ${XDEBUG_REMOTE}
             XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
             ENCORE_DEV_SERVER: ${ENCORE_DEV_SERVER}
+            HOST_TARGET: 'http://gateway:9091'
+            VPN_FILE_PATH: '/var/www/symfony/vpn_conf.ovpn'
         ports:
             - "8080:8080"
         volumes:
+            - ${APP_PATH}/cron:/etc/crontabs/root
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
             - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
         mem_limit: 4096m

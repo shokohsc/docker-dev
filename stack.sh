@@ -2,8 +2,8 @@
 
 if [[ $1 = 'symfony' ]]
 then
-    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish elasticsearch logstash kibana sqlite <==== ####' && \
-    docker-compose -f docker-compose.php.yml up -d --remove-orphans php-fpm nginx varnish elasticsearch logstash kibana sqlite
+    echo '#### ====>  starting basic stack containers: php-fpm <==== ####' && \
+    docker-compose -f docker-compose.php.yml up -d --remove-orphans php-fpm
 
 elif [[ $1 = 'flask' ]]
 then
