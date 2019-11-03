@@ -1,5 +1,8 @@
 version: '2.2'
 
+volumes:
+    elasticsearch_data: {}
+
 services:
     php-fpm:
         container_name: php-fpm
@@ -32,7 +35,7 @@ services:
         volumes:
             - /var/log/nginx
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
-            # - ./nginx/symfony.conf:/etc/nginx/conf.d/symfony.conf:${CACHE_MODE}
+            - ./nginx/symfony4.conf:/etc/nginx/conf.d/symfony.conf:${CACHE_MODE}
         depends_on:
             - php-fpm
         mem_limit: 8m
@@ -52,48 +55,39 @@ services:
 
     elasticsearch:
         container_name: elasticsearch
-        build:
-            context: elasticsearch/
-            args:
-                ELK_VERSION: $ELK_VERSION
-        volumes:
-            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+        image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
         environment:
+            discovery.type: single-node
             ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-        mem_limit: 512m
-
-    logstash:
-        container_name: logstash
-        build:
-            context: logstash/
-            args:
-                ELK_VERSION: $ELK_VERSION
         volumes:
-            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-            - ./logstash/patterns:/opt/logstash/patterns
-            - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
-        volumes_from:
-            - php-fpm
-            - nginx
-        environment:
-            LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-        depends_on:
-            - elasticsearch
-        mem_limit: 1024m
+            - elasticsearch_data:/usr/share/elasticsearch/data
+        mem_limit: 512m
 
     kibana:
         container_name: kibana
-        build:
-            context: kibana/
-            args:
-                ELK_VERSION: $ELK_VERSION
-        volumes:
-            - ./kibana/config/:/usr/share/kibana/config:ro
+        image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
+        environment:
+            SERVER_NAME: kibana
+            LOGGING_QUIET: 'true'
         ports:
             - "82:5601"
         depends_on:
             - elasticsearch
-        mem_limit: 128m
+        mem_limit: 512m
+
+    filebeat:
+        container_name: filebeat
+        image: docker.elastic.co/beats/filebeat:${ELK_VERSION}
+        command: filebeat -e -strict.perms=false
+        user: root
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/lib/docker:/var/lib/docker:ro
+            - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+        depends_on:
+            - elasticsearch
+            - kibana
+        mem_limit: 64m
 
     sqlite:
         container_name: sqlite
