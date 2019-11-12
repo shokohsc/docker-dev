@@ -12,7 +12,7 @@ services:
             PGID: ${PGID}
             PUID: ${PUID}
             TZ: ${TIMEZONE}
-            NODE_ENV: production
+            NODE_ENV: development
         ports:
             - "80:3000"
         volumes:
