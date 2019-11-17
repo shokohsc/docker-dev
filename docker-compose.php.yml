@@ -35,7 +35,7 @@ services:
         volumes:
             - /var/log/nginx
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
-            - ./nginx/symfony.conf:/etc/nginx/conf.d/symfony.conf:${CACHE_MODE}
+            - ./config/nginx/symfony.conf:/etc/nginx/conf.d/symfony.conf:${CACHE_MODE}
         depends_on:
             - php-fpm
         mem_limit: 8m
@@ -83,7 +83,7 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /var/lib/docker:/var/lib/docker:ro
-            - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+            - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
         depends_on:
             - elasticsearch
             - kibana

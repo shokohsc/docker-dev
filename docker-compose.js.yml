@@ -13,6 +13,11 @@ services:
             PUID: ${PUID}
             TZ: ${TIMEZONE}
             NODE_ENV: development
+            # MATTERMOST_WEBHOOK_URL: ""
+            # RCON_HOST: minecraft
+            # RCON_PORT: 45575
+            # RCON_PASSWORD: minecraft
+            # AMQP_HOST: rabbitmq
         ports:
             - "80:3000"
         volumes:
@@ -49,8 +54,120 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /var/lib/docker:/var/lib/docker:ro
-            - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+            - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
         depends_on:
             - elasticsearch
             - kibana
         mem_limit: 64m
+
+    logstash:
+        container_name: logstash
+        image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
+        environment:
+            LOG_LEVEL: warn
+        volumes:
+            - ./config/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+            - ./config/logstash/pipeline:/usr/share/logstash/pipeline:ro
+        depends_on:
+            - elasticsearch
+        logging:
+            options:
+                max-size: "50k"
+                max-file: "2"
+        mem_limit: 1024m
+
+    rabbitmq:
+        image: rabbitmq:management-alpine
+        container_name: rabbitmq
+        ports:
+            - "81:15672"
+        logging:
+            options:
+                max-size: "50k"
+                max-file: "2"
+        mem_limit: 1024m
+
+    # mattermost:
+    #     build:
+    #         context: build/mattermost
+    #         args:
+    #             - edition=team
+    #     container_name: mattermost
+    #     environment:
+    #         MM_USERNAME: mattermost
+    #         MM_PASSWORD: mattermost
+    #         MM_DBNAME: mattermost
+    #         MM_SQLSETTINGS_DRIVERNAME: mysql
+    #         MM_SQLSETTINGS_DATASOURCE: mattermost:mattermost@tcp(mysql:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s
+    #         DB_HOST: mysql
+    #         DB_PORT_NUMBER: 3306
+    #     ports:
+    #         - "83:8000"
+    #     depends_on:
+    #         - mysql
+    #     logging:
+    #         options:
+    #             max-size: "50k"
+    #             max-file: "2"
+    #     mem_limit: 1024m
+    #
+    # mysql:
+    #     image: mariadb
+    #     container_name: mysql
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: root
+    #         MYSQL_DATABASE: mattermost
+    #         MYSQL_USER: mattermost
+    #         MYSQL_PASSWORD: mattermost
+    #     logging:
+    #         options:
+    #             max-size: "50k"
+    #             max-file: "2"
+    #     mem_limit: 128m
+
+    # minecraft:
+    #     container_name: minecraft
+    #     image: itzg/minecraft-server
+    #     environment:
+    #         EULA: 'TRUE'
+    #         VERSION: 1.14.4
+    #         TYPE: SPIGOT
+    #         CONSOLE: 'false'
+    #         ONLINE_MODE: 'false'
+    #         ALLOW_FLIGHT: 'true'
+    #         MEMORY: 2G
+    #         LEVEL_TYPE: AMPLIFIED
+    #         LEVEL: world
+    #         PVP: 'true'
+    #         MOTD: A Vanilla Minecraft Server powered by Docker
+    #         MODE: survival
+    #         SEED: -8913466909937400889
+    #         VIEW_DISTANCE: 10
+    #         SPAWN_PROTECTION: 0
+    #         SPAWN_MONSTERS: 'true'
+    #         SPAWN_NPCS: 'true'
+    #         SPAWN_ANIMALS: 'true'
+    #         MAX_TICK_TIME: 60000
+    #         MAX_BUILD_HEIGHT: 512
+    #         SNOOPER_ENABLED: 'false'
+    #         HARDCORE: 'false'
+    #         GENERATE_STRUCTURES: 'true'
+    #         FORCE_GAMEMODE: 'false'
+    #         ENABLE_COMMAND_BLOCK: 'true'
+    #         MAX_PLAYERS: 10
+    #         MAX_WORLD_SIZE: 29999984
+    #         ALLOW_NETHER: 'true'
+    #         ANNOUNCE_PLAYER_ACHIEVEMENTS: 'true'
+    #         ENABLE_QUERY: 'false'
+    #         ENABLE_RCON: 'true'
+    #         RCON_PASSORD: minecraft
+    #         OPS: shokohsc,danydoudoune
+    #         DIFFICULTY: hard
+    #         SERVER_NAME: minecraft
+    #         SERVER_PORT: 25565
+    #         OVERRIDE_SERVER_PROPERTIES: 'true'
+    #     logging:
+    #         options:
+    #             max-size: "50k"
+    #             max-file: "2"
+    #     mem_limit: 2048m
