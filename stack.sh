@@ -7,8 +7,8 @@ then
 
 elif [[ $1 = 'node' ]]
 then
-    echo '#### ====>  starting basic stack containers: node elasticsearch filebeat kibana <==== ####' && \
-    docker-compose -f docker-compose.js.yml up -d --remove-orphans node elasticsearch filebeat kibana
+    echo '#### ====>  starting basic stack containers: node elasticsearch filebeat kibana logstash rabbitmq minecraft <==== ####' && \
+    docker-compose -f docker-compose.js.yml up -d --remove-orphans node elasticsearch filebeat kibana logstash rabbitmq minecraft
 
 elif [[ $1 = 'flask' ]]
 then
