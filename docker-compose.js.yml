@@ -125,49 +125,70 @@ services:
     #             max-file: "2"
     #     mem_limit: 128m
 
-    minecraft:
-        container_name: minecraft
-        image: itzg/minecraft-server
-        environment:
-            EULA: 'TRUE'
-            VERSION: 1.14.4
-            TYPE: SPIGOT
-            CONSOLE: 'false'
-            ONLINE_MODE: 'false'
-            ALLOW_FLIGHT: 'true'
-            MEMORY: 2G
-            LEVEL_TYPE: FLAT
-            LEVEL: world
-            PVP: 'true'
-            MOTD: A Vanilla Minecraft Server powered by Docker
-            MODE: survival
-            SEED: 0
-            VIEW_DISTANCE: 2
-            SPAWN_PROTECTION: 0
-            SPAWN_MONSTERS: 'true'
-            SPAWN_NPCS: 'true'
-            SPAWN_ANIMALS: 'true'
-            MAX_TICK_TIME: 60000
-            MAX_BUILD_HEIGHT: 64
-            SNOOPER_ENABLED: 'false'
-            HARDCORE: 'false'
-            GENERATE_STRUCTURES: 'true'
-            FORCE_GAMEMODE: 'false'
-            ENABLE_COMMAND_BLOCK: 'true'
-            MAX_PLAYERS: 10
-            MAX_WORLD_SIZE: 16000
-            ALLOW_NETHER: 'true'
-            ANNOUNCE_PLAYER_ACHIEVEMENTS: 'true'
-            ENABLE_QUERY: 'false'
-            ENABLE_RCON: 'true'
-            RCON_PASSORD: minecraft
-            OPS: shokohsc,danydoudoune
-            DIFFICULTY: hard
-            SERVER_NAME: minecraft
-            SERVER_PORT: 25565
-            OVERRIDE_SERVER_PROPERTIES: 'true'
+    # minecraft:
+    #     container_name: minecraft
+    #     image: itzg/minecraft-server
+    #     environment:
+    #         EULA: 'TRUE'
+    #         VERSION: 1.14.4
+    #         TYPE: VANILLA
+    #         OVERRIDE_SERVER_PROPERTIES: 'true'
+    #         ONLINE_MODE: 'false'
+    #         ALLOW_FLIGHT: 'true'
+    #         MEMORY: 1G
+    #         LEVEL_TYPE: FLAT
+    #         LEVEL: world
+    #         PVP: 'true'
+    #         MOTD: A Vanilla Minecraft Server powered by Docker
+    #         MODE: creative
+    #         SEED: 0
+    #         VIEW_DISTANCE: 2
+    #         SPAWN_PROTECTION: 0
+    #         SPAWN_MONSTERS: 'false'
+    #         SPAWN_NPCS: 'false'
+    #         SPAWN_ANIMALS: 'false'
+    #         MAX_TICK_TIME: 60000
+    #         MAX_BUILD_HEIGHT: 64
+    #         SNOOPER_ENABLED: 'false'
+    #         HARDCORE: 'false'
+    #         GENERATE_STRUCTURES: 'false'
+    #         FORCE_GAMEMODE: 'false'
+    #         ENABLE_COMMAND_BLOCK: 'true'
+    #         MAX_PLAYERS: 10
+    #         MAX_WORLD_SIZE: 10000
+    #         ALLOW_NETHER: 'true'
+    #         ANNOUNCE_PLAYER_ACHIEVEMENTS: 'true'
+    #         ENABLE_QUERY: 'false'
+    #         ENABLE_RCON: 'true'
+    #         RCON_PORT: 45575
+    #         RCON_PASSWORD: minecraft
+    #         OPS: shokohsc,danydoudoune
+    #         DIFFICULTY: hard
+    #         SERVER_NAME: minecraft
+    #         SERVER_PORT: 25565
+    #     logging:
+    #         options:
+    #             max-size: "50k"
+    #             max-file: "2"
+    #     mem_limit: 1024m
+
+    telegraf: # Telegraf
+        container_name: telegraf
+        image: telegraf
+        volumes:
+            - ./config/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+        depends_on:
+            - graphite
+            - elasticsearch
         logging:
             options:
                 max-size: "50k"
                 max-file: "2"
-        mem_limit: 1024m
+
+    graphite: # Graphite database
+        container_name: graphite
+        image: graphiteapp/graphite-statsd
+        logging:
+            options:
+                max-size: "50k"
+                max-file: "2"
