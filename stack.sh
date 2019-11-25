@@ -2,18 +2,18 @@
 
 if [[ $1 = 'symfony' ]]
 then
-    echo '#### ====>  starting basic stack containers: php-fpm nginx varnish elasticsearch filebeat kibana sqlite <==== ####' && \
-    docker-compose -f docker-compose.php.yml up -d --remove-orphans php-fpm nginx varnish elasticsearch filebeat kibana sqlite
+    echo '#### ====>  starting php stack containers <==== ####' && \
+    docker-compose -f docker-compose.php.yml up -d --remove-orphans
 
 elif [[ $1 = 'node' ]]
 then
-    echo '#### ====>  starting basic stack containers: node elasticsearch filebeat kibana logstash rabbitmq minecraft <==== ####' && \
-    docker-compose -f docker-compose.js.yml up -d --remove-orphans node elasticsearch filebeat kibana logstash rabbitmq minecraft
+    echo '#### ====>  starting js stack containers <==== ####' && \
+    docker-compose -f docker-compose.js.yml up -d --remove-orphans
 
 elif [[ $1 = 'flask' ]]
 then
-    echo '#### ====>  starting basic stack containers: python <==== ####' && \
-    docker-compose -f docker-compose.python.yml up -d --remove-orphans python
+    echo '#### ====>  starting python stack containers <==== ####' && \
+    docker-compose -f docker-compose.python.yml up -d --remove-orphans
 
 elif [[ $1 = 'pull' ]]
 then

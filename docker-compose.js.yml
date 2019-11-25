@@ -56,18 +56,33 @@ services:
             - /var/lib/docker:/var/lib/docker:ro
             - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
         depends_on:
-            - elasticsearch
-            - kibana
+            - logstash-publish
         mem_limit: 64m
 
-    logstash:
-        container_name: logstash
+    logstash-publish:
+        container_name: logstash-publish
         image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
         environment:
             LOG_LEVEL: warn
         volumes:
-            - ./config/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
-            - ./config/logstash/pipeline:/usr/share/logstash/pipeline:ro
+            - ./config/logstash/pipelines-to_rabbitmq.yml:/usr/share/logstash/config/pipelines.yml:ro
+            - ./config/logstash/pipeline/to_rabbitmq.conf:/usr/share/logstash/pipeline/to_rabbitmq.conf:ro
+        depends_on:
+            - rabbitmq
+        logging:
+            options:
+                max-size: "50k"
+                max-file: "2"
+        mem_limit: 1024m
+
+    logstash-consume:
+        container_name: logstash-consume
+        image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
+        environment:
+            LOG_LEVEL: warn
+        volumes:
+            - ./config/logstash/pipelines-from_rabbitmq.yml:/usr/share/logstash/config/pipelines.yml:ro
+            - ./config/logstash/pipeline/from_rabbitmq.conf:/usr/share/logstash/pipeline/from_rabbitmq.conf:ro
         depends_on:
             - elasticsearch
         logging:
@@ -178,16 +193,32 @@ services:
         volumes:
             - ./config/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
         depends_on:
-            - graphite
+            # - graphite
             - elasticsearch
         logging:
             options:
                 max-size: "50k"
                 max-file: "2"
 
-    graphite: # Graphite database
-        container_name: graphite
-        image: graphiteapp/graphite-statsd
+    # graphite: # Graphite database
+    #     container_name: graphite
+    #     image: graphiteapp/graphite-statsd
+    #     logging:
+    #         options:
+    #             max-size: "50k"
+    #             max-file: "2"
+
+    peerflix:
+        image: shokohsc/peerflix-server
+        container_name: peerflix
+        ports:
+            - "83:9000"
+        healthcheck:
+            test: ["CMD", "curl", "-IfkLX", "GET", "https://ifconfig.co"]
+            interval: 30s
+            timeout: 30s
+            start_period: 60s
+            retries: 5
         logging:
             options:
                 max-size: "50k"
