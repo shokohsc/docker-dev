@@ -56,35 +56,18 @@ services:
             - /var/lib/docker:/var/lib/docker:ro
             - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
         depends_on:
-            - logstash-publish
+            - logstash
         mem_limit: 64m
 
-    logstash-publish:
-        container_name: logstash-publish
+    logstash:
+        container_name: logstash
         image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
         environment:
             LOG_LEVEL: warn
         volumes:
-            - ./config/logstash/pipelines-to_rabbitmq.yml:/usr/share/logstash/config/pipelines.yml:ro
-            - ./config/logstash/pipeline/to_rabbitmq.conf:/usr/share/logstash/pipeline/to_rabbitmq.conf:ro
+            - ./config/logstash:/usr/share/logstash/pipeline
         depends_on:
             - rabbitmq
-        logging:
-            options:
-                max-size: "50k"
-                max-file: "2"
-        mem_limit: 1024m
-
-    logstash-consume:
-        container_name: logstash-consume
-        image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
-        environment:
-            LOG_LEVEL: warn
-        volumes:
-            - ./config/logstash/pipelines-from_rabbitmq.yml:/usr/share/logstash/config/pipelines.yml:ro
-            - ./config/logstash/pipeline/from_rabbitmq.conf:/usr/share/logstash/pipeline/from_rabbitmq.conf:ro
-        depends_on:
-            - elasticsearch
         logging:
             options:
                 max-size: "50k"
