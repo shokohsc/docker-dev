@@ -107,6 +107,15 @@ chmod -R 644 /etc/logrotate.d
 
 # docker
 grep -q 'ping' /etc/group && delgroup ping
+
+# check env var for docker GID
+[[ -z $DOCKER_GID ]] && \
+    DOCKER_GID='999'
+# check /var/run/docker.sock for GID
+[[ -e /var/run/docker.sock ]] && \
+    DOCKER_GID="$(stat -c %g /var/run/docker.sock)"
+
+
 grep -qxF 'docker' /etc/group || addgroup -g 999 docker
 groups app |grep docker || addgroup app docker
 groups app |grep root || addgroup app root
