@@ -40,41 +40,6 @@ services:
             - php-fpm
         mem_limit: 8m
 
-    varnish:
-        container_name: varnish
-        image: shokohsc/alpine-varnish
-        environment:
-            PGID: ${PGID}
-            PUID: ${PUID}
-            TZ: ${TIMEZONE}
-        ports:
-            - "81:80"
-        depends_on:
-            - nginx
-        mem_limit: 128m
-
-    elasticsearch:
-        container_name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
-        environment:
-            discovery.type: single-node
-            ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-        volumes:
-            - elasticsearch_data:/usr/share/elasticsearch/data
-        mem_limit: 512m
-
-    kibana:
-        container_name: kibana
-        image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
-        environment:
-            SERVER_NAME: kibana
-            LOGGING_QUIET: 'true'
-        ports:
-            - "82:5601"
-        depends_on:
-            - elasticsearch
-        mem_limit: 512m
-
     filebeat:
         container_name: filebeat
         image: docker.elastic.co/beats/filebeat:${ELK_VERSION}
@@ -84,19 +49,5 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - /var/lib/docker:/var/lib/docker:ro
             - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-        depends_on:
-            - elasticsearch
-            - kibana
+            # - ${CA_PATH}:/etc/ca.crt
         mem_limit: 64m
-
-    sqlite:
-        container_name: sqlite
-        image: sqrt3/sqlite-web
-        command: /db/data.db
-        ports:
-            - "83:8080"
-        volumes:
-            - ${APP_PATH}/var/:/db
-        depends_on:
-            - php-fpm
-        mem_limit: 1024m

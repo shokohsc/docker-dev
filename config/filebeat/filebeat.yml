@@ -13,7 +13,9 @@ processors:
     overwrite_keys: true
 
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts: ["lucio:5044"]
+  # hosts: ["logstash.lucio.home"]
+  # ssl.certificate_authorities: ["/etc/ca.crt"]
 
 logging.json: true
 logging.metrics.enabled: false
