@@ -16,11 +16,17 @@ services:
             XDEBUG_REMOTE: ${XDEBUG_REMOTE}
             XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
             ENCORE_DEV_SERVER: ${ENCORE_DEV_SERVER}
+            DOCKER_HOST: 'tcp://lucio.home:2376'
+            DOCKER_TLS_VERIFY: 'true'
+            DOCKER_CERT_PATH: /etc/ca
         ports:
             - "8080:8080"
         volumes:
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
             - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
+            # - /Users/dimitri/Downloads/rootCA.cer:/etc/ca/ca.pem:ro
+            - /Users/dimitri/Downloads/lucio.home.cer:/etc/ca/cert.pem:ro
+            - /Users/dimitri/Downloads/lucio.home-key.cer:/etc/ca/key.pem:ro
         mem_limit: 4096m
 
     nginx:
