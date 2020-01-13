@@ -1,8 +1,5 @@
 version: '2.4'
 
-volumes:
-    elasticsearch_data: {}
-
 services:
     node:
         container_name: node
@@ -22,6 +19,7 @@ services:
             - "80:3000"
         volumes:
             - ${APP_PATH}:/app:${CACHE_MODE}
+            # - ${CA_PATH}:/etc/ca.crt
         mem_limit: 512m
 
     filebeat:

@@ -1,7 +1,4 @@
-version: '2.2'
-
-volumes:
-    elasticsearch_data: {}
+version: '2.4'
 
 services:
     php-fpm:
@@ -27,7 +24,7 @@ services:
             # - /Users/dimitri/Downloads/rootCA.cer:/etc/ca/ca.pem:ro
             - /Users/dimitri/Downloads/lucio.home.cer:/etc/ca/cert.pem:ro
             - /Users/dimitri/Downloads/lucio.home-key.cer:/etc/ca/key.pem:ro
-        mem_limit: 4096m
+        mem_limit: 2048m
 
     nginx:
         container_name: nginx
