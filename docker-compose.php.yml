@@ -16,6 +16,7 @@ services:
             DOCKER_HOST: 'tcp://lucio.home:2376'
             DOCKER_TLS_VERIFY: 'true'
             DOCKER_CERT_PATH: /etc/ca
+            PEER_ID: ${PEER_ID}
         ports:
             - "8080:8080"
         volumes:
