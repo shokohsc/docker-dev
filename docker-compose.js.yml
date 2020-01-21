@@ -11,10 +11,6 @@ services:
             TZ: ${TIMEZONE}
             NODE_ENV: development
             MATTERMOST_WEBHOOK_URL: ""
-            RCON_HOST: minecraft
-            RCON_PORT: 45575
-            RCON_PASSWORD: minecraft
-            AMQP_HOST: rabbitmq
         ports:
             - "80:3000"
         volumes:
