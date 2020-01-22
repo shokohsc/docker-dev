@@ -3,17 +3,17 @@
 if [[ $1 = 'symfony' ]]
 then
     echo '#### ====>  starting php stack containers <==== ####' && \
-    docker-compose -f docker-compose.php.yml up -d --remove-orphans
+    docker-compose -f docker-compose.php.yml up -dV --remove-orphans
 
 elif [[ $1 = 'node' ]]
 then
     echo '#### ====>  starting js stack containers <==== ####' && \
-    docker-compose -f docker-compose.js.yml up -d --remove-orphans
+    docker-compose -f docker-compose.js.yml up -dV --remove-orphans
 
 elif [[ $1 = 'flask' ]]
 then
     echo '#### ====>  starting python stack containers <==== ####' && \
-    docker-compose -f docker-compose.python.yml up -d --remove-orphans
+    docker-compose -f docker-compose.python.yml up -dV --remove-orphans
 
 elif [[ $1 = 'pull' ]]
 then
