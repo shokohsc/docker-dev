@@ -1,5 +1,8 @@
 version: '2.4'
 
+volumes:
+    mongo_data: {}
+
 services:
     node:
         container_name: node
@@ -17,6 +20,12 @@ services:
             - ${APP_PATH}:/app:${CACHE_MODE}
             # - ${CA_PATH}:/etc/ca.crt
         mem_limit: 512m
+
+    mongo: # Wekan requirement
+        image: mongo
+        container_name: mongo
+        volumes:
+            - mongo_data:/data/db
 
     filebeat:
         container_name: filebeat
