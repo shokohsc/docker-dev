@@ -1,4 +1,4 @@
-FROM shokohsc/alpine-s6:3.9
+FROM shokohsc/alpine-s6
 
 ENV WORKDIR "/app"
 
@@ -8,7 +8,7 @@ RUN \
  apk update && \
  apk add --no-cache \
 	git \
-	libressl2.7-libssl \
+	libressl \
 	logrotate \
 	openssl \
     npm \
