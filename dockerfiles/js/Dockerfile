@@ -1,4 +1,5 @@
-FROM shokohsc/alpine-s6
+ARG FROM_TAG='latest'
+FROM shokohsc/alpine-s6:${FROM_TAG:-latest}
 
 ENV WORKDIR "/app"
 
@@ -7,13 +8,11 @@ RUN \
  echo "**** install build packages ****" && \
  apk update && \
  apk add --no-cache \
-	git \
-	libressl \
-	logrotate \
-	openssl \
+    git \
+    logrotate \
     npm \
-    nodejs \
-    yarn && \
+    yarn \
+    nodejs && \
  echo "**** fix logrotate ****" && \
  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf
 

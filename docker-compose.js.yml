@@ -4,10 +4,10 @@ volumes:
     mongo_data: {}
 
 services:
-    node:
-        container_name: node
+    js:
+        container_name: js
         build:
-            context: dockerfiles/node
+            context: dockerfiles/js
         environment:
             PGID: ${PGID}
             PUID: ${PUID}
@@ -22,7 +22,6 @@ services:
         volumes:
             - ${APP_PATH}:/app:${CACHE_MODE}
             - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
-            # - ${CA_PATH}:/etc/ca.crt
         mem_limit: 512m
 
     mongo: # Wekan requirement
@@ -50,5 +49,3 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - /var/lib/docker:/var/lib/docker:ro
             - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-            # - ${CA_PATH}:/etc/ca.crt
-        mem_limit: 64m

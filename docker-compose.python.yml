@@ -21,3 +21,14 @@ services:
             - "80:5000"
             - "8080:8080"
         mem_limit: 2048m
+
+    filebeat:
+        container_name: filebeat
+        image: docker.elastic.co/beats/filebeat:${ELK_VERSION}
+        command: filebeat -e -strict.perms=false
+        user: root
+        hostname: ${FILEBEAT_HOSTNAME}
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/lib/docker:/var/lib/docker:ro
+            - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro

@@ -5,6 +5,8 @@ services:
         container_name: php-fpm
         build:
             context: dockerfiles/php-fpm
+            args:
+                FROM_TAG: s6-overlay-v1.22.1.0-alpine-3.9-s6-overlay-arch-amd64
         environment:
             PGID: ${PGID}
             PUID: ${PUID}
@@ -22,9 +24,6 @@ services:
         volumes:
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
             - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
-            # - /Users/dimitri/Downloads/rootCA.cer:/etc/ca/ca.pem:ro
-            - /Users/dimitri/Downloads/lucio.home.cer:/etc/ca/cert.pem:ro
-            - /Users/dimitri/Downloads/lucio.home-key.cer:/etc/ca/key.pem:ro
         mem_limit: 2048m
 
     nginx:
