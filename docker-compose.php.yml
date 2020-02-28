@@ -23,7 +23,9 @@ services:
             - "8080:8080"
         volumes:
             - ${APP_PATH}:/var/www/symfony:${CACHE_MODE}
-            - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
+            # - /var/run/docker.sock:/var/run/docker.sock:${CACHE_MODE}
+            - /Users/dimitri/Documents/lucio.home.cer:/etc/ca/cert.pem:ro
+            - /Users/dimitri/Documents/lucio.home-key.cer:/etc/ca/key.pem:ro
         mem_limit: 2048m
 
     nginx:
